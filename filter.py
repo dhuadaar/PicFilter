@@ -38,7 +38,7 @@ while(True):
 	if (cv2.waitKey(1) & 0xFF) == 27:
 		break
 		
-cv2.imwrite("Output_file.jpg",frame)
+cv2.imwrite("Output_file.jpg",frame-img)
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
