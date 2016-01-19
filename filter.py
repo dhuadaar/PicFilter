@@ -1,44 +1,48 @@
 import cv2
 import numpy as np
-
 def nothing(x):
     pass
 	
-cv2.namedWindow('image')
+cv2.namedWindow('Filter')
 
 # create trackbars for color change
-cv2.createTrackbar('R','image',0,255,nothing)
-cv2.createTrackbar('G','image',0,255,nothing)
-cv2.createTrackbar('B','image',0,255,nothing)
+cv2.createTrackbar('R','Filter',0,255,nothing)
+cv2.createTrackbar('G','Filter',0,255,nothing)
+cv2.createTrackbar('B','Filter',0,255,nothing)
 
 # create switch for ON/OFF functionality
 switch = '0 : OFF \n1 : ON'
-cv2.createTrackbar(switch, 'image',0,1,nothing)
-	
+cv2.createTrackbar(switch, 'Filter',0,1,nothing)
+
 cap=cv2.VideoCapture(0)
+l,b,n=cap.read()[1].shape
+	
+cv2.namedWindow("Original")
 while(True):
-	ret, frame = cap.read()
-	if(ret):
-		l,b,n=frame.shape
-		img = np.zeros([l,b,n], np.uint8)
+	#pick BGR values
+	r = cv2.getTrackbarPos('R','Filter')
+	g = cv2.getTrackbarPos('G','Filter')
+	bl = cv2.getTrackbarPos('B','Filter')
+	s = cv2.getTrackbarPos(switch,'Filter')
 	
-	
-	# get current positions of four trackbars
-	r = cv2.getTrackbarPos('R','image')
-	g = cv2.getTrackbarPos('G','image')
-	b = cv2.getTrackbarPos('B','image')
-	s = cv2.getTrackbarPos(switch,'image')
-	cv2.imshow('image',img)
+	#create filter matrix
 	if s == 0:
-		img[:] = 0
+		temp1=np.full((l,b,n),[255,255,255],dtype=np.int)
 	else:
-		img[:] = [b,g,r]
+		temp1=np.full((l,b,n),[bl,g,r],dtype=np.int)
+	cv2.imshow('Filter',temp1)
 	
-	cv2.imshow('frame',frame-img)
+	ret, frame = cap.read()
+	#multiply original Image and filter
+	f1=np.multiply(frame,temp1)
+	#display Umage and filter
+	cv2.imshow('Original',frame)
+	cv2.imshow('Filtered',f1)
+	
 	if (cv2.waitKey(1) & 0xFF) == 27:
 		break
 		
-cv2.imwrite("Output_file.jpg",frame-img)
+cv2.imwrite("Output_file.jpg",f1)
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
