@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt 
 def nothing(x):
     pass
 	
@@ -17,7 +18,7 @@ cv2.createTrackbar(switch, 'Filter',0,1,nothing)
 cap=cv2.VideoCapture(0)
 l,b,n=cap.read()[1].shape
 	
-cv2.namedWindow("Original")
+cv2.namedWindow("Image")
 while(True):
 	#pick BGR values
 	r = cv2.getTrackbarPos('R','Filter')
@@ -27,22 +28,23 @@ while(True):
 	
 	#create filter matrix
 	if s == 0:
-		temp1=np.full((l,b,n),[255,255,255],dtype=np.int)
+		temp1=np.full((l,b,n),[255,255,255],dtype=np.uint16)
 	else:
-		temp1=np.full((l,b,n),[bl,g,r],dtype=np.int)
+		temp1=np.full((l,b,n),[bl,g,r],dtype=np.uint16)
 	cv2.imshow('Filter',temp1)
 	
 	ret, frame = cap.read()
 	#multiply original Image and filter
 	f1=np.multiply(frame,temp1)
-	#display Umage and filter
-	cv2.imshow('Original',frame)
-	cv2.imshow('Filtered',f1)
+	#display image and filter
+	cv2.imshow('Image',frame)
+	cv2.imshow('Filter',f1)
 	
 	if (cv2.waitKey(1) & 0xFF) == 27:
 		break
 		
-cv2.imwrite("Output_file.jpg",f1)
+cv2.imwrite("Output_file.tiff",f1)
 # When everything done, release the capture
 cap.release()
+
 cv2.destroyAllWindows()
