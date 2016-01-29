@@ -13,7 +13,6 @@ cv2.createTrackbar('B','Filter',0,255,nothing)
 # create switch for ON/OFF functionality
 switch = '0 : OFF \n1 : ON'
 cv2.createTrackbar(switch, 'Filter',0,1,nothing)
-
 cap=cv2.VideoCapture(0)
 l,b,n=cap.read()[1].shape
 	
@@ -35,8 +34,7 @@ while(True):
 	ret, frame = cap.read()
 	#multiply original Image and filter
 	f1=np.multiply(frame,temp1)
-	#display image and filter
-	cv2.imshow('Image',frame)
+	#display and filter
 	cv2.imshow('Filter',f1)
 	
 	if (cv2.waitKey(1) & 0xFF) == 27:
