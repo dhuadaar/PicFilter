@@ -15,8 +15,7 @@ switch = '0 : OFF \n1 : ON'
 cv2.createTrackbar(switch, 'Filter',0,1,nothing)
 cap=cv2.VideoCapture(0)
 l,b,n=cap.read()[1].shape
-	
-cv2.namedWindow("Image")
+
 while(True):
 	#pick BGR values
 	r = cv2.getTrackbarPos('R','Filter')
