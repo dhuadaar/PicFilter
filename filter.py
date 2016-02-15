@@ -21,6 +21,13 @@ cv2.createTrackbar(switch, 'Tint',0,1,nothing)
 cap=cv2.VideoCapture(0)
 #capture the shape of image to generate filters of same size
 l,b,n=cap.read()[1].shape
+temp3=np.zeros((l,b,n),dtype=np.int)
+temp3[:,:,0]=200
+temp3[:,:,1]=128
+for i in range(b):
+	temp3[:,i,2]= i%640
+	#temp3[:,i,1]= 255/(i%256 +1)
+	
 
 class Hotshot:
 	"""
@@ -91,12 +98,12 @@ class WaterColor:
 		final = cv2.bitwise_and(img_color, img_edge)
 		return cv2.medianBlur(final,7)
 
-class PencilSketch:
+class ComicSketch:
 	'''
-	PencilSketch
+	ComicSketch
 	We followed a similar approach to what we followed in the Water Color filter.
 	But this time around after obtaining the major edges of the image, we 
-	multiplied it with a pre built canvas sheet to give a pencil like image.	
+	multiplied it with a pre built canvas sheet to give a Comic like image.	
 	'''
 	def __init__(self):
 		pass
@@ -198,7 +205,18 @@ class Tint:
 		
 		return np.multiply(frame,temp)
 
-
+class Gradient:
+	'''
+	Tint
+	Select the rgb value of a color tone and multiply it with he frame to create 
+	a tinted effect into your image.
+	'''
+	def __init__(self):
+		pass
+	#create mask and render frame
+	def render(self,frame):
+		return np.multiply(frame,temp3)
+		
 class WarmingFilter:
     """
 	Warming filter
@@ -276,7 +294,8 @@ if __name__=="__main__":
 	h7=Sketch()
 	h8=Negative()
 	h9=Hotshot()
-	h10=PencilSketch()
+	h10=ComicSketch()
+	h11=Gradient()
 	while(True):
 		ret,frame=cap.read()
 		r = cv2.getTrackbarPos('R','Tint')
@@ -293,10 +312,13 @@ if __name__=="__main__":
 		cv2.imshow("Skecth",h7.render(frame))
 		cv2.imshow("Negative",h8.render(frame))
 		cv2.imshow("Hotshot",h9.render(frame))
-		cv2.imshow("PencilSketch",h10.render(frame))
+		cv2.imshow("ComicSketch",h10.render(frame))
+		cv2.imshow("Gradient",h11.render(frame))
 		if (cv2.waitKey(1) & 0xFF) == 27:
 			break
 		
 	# When everything done, release the capture
+	cv2.imwrite("Mozaic.jpg",h2.render(frame))
+	cv2.imwrite("WaterColor.jpg",h3.render(frame))
 	cap.release()
 	cv2.destroyAllWindows()
